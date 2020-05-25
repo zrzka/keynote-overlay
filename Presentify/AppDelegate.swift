@@ -8,6 +8,14 @@ import HotKey
 final class OverlayView: NSView {
     private var path: NSBezierPath?
 
+    override func keyDown(with event: NSEvent) {
+        print("keyDown - \(event.keyCode)")
+    }
+
+    override func keyUp(with event: NSEvent) {
+        print("keyUp - \(event.keyCode)")
+    }
+
     override func mouseDown(with event: NSEvent) {
         let point = self.convert(event.locationInWindow, from: nil)
 
@@ -48,6 +56,14 @@ final class OverlayView: NSView {
         NSColor.green.set()
         path.stroke()
     }
+
+    override var acceptsFirstResponder: Bool {
+        true
+    }
+
+    override var needsPanelToBecomeKey: Bool {
+        true
+    }
 }
 
 final class OverlayWindow: NSPanel {
@@ -72,6 +88,10 @@ final class OverlayWindow: NSPanel {
         backgroundColor = NSColor.black.withAlphaComponent(0.001)
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
     }
+
+    override var canBecomeKey: Bool {
+        true
+    }
 }
 
 @NSApplicationMain
@@ -91,6 +111,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             overlayWindowController = NSWindowController(window: OverlayWindow())
             overlayWindowController?.showWindow(self)
+            overlayWindowController?.window?.makeKey()
         }
     }
 
